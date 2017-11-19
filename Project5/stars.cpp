@@ -23,12 +23,12 @@ int main()
 	if (nWords < 1)
 	{
 		cout << "No words were loaded, so I can't play the game.";
-		return 1;
+		return 0;
 	}
 	//Terminate since nWords cannot be greater than maximum number of words
 	if (nWords > MAXNUMWORDS)
 	{
-		return 1;
+		return 0;
 	}
 
 	//Take in the number of rounds wanted to be played and check validity of the input
@@ -40,7 +40,7 @@ int main()
 	if (numRounds < 0)
 	{
 		cout << "The number of rounds must be positive.";
-		return 1;
+		return 0;
 	}
 
 	//Modify cout to only print out 2 decimals for the average scores
@@ -57,9 +57,13 @@ int main()
 		cout << endl << "Round " << i + 1 << endl;
 		int randomNum = randInt(0, nWords - 1);	//Generate a random integer for the index of the secret word that will be used
 		cout << "The secret word is " << strlen(wordList[randomNum]) << " letters long." << endl;
-		cout << "Word: " << wordList[randomNum] << endl;
 		//Run one round and calculate the score average, max tries, and min tries
 		currentScore = runOneRound(wordList, nWords, randomNum);
+		if (currentScore == -1)
+		{
+			cerr << "Error: bad parameters for runOneRound()." << endl;
+			return 0;
+		}
 		totalScore += currentScore;
 		if (currentScore > maxTries)
 			maxTries = currentScore;
@@ -73,10 +77,14 @@ int main()
 			cout << "You got it in " << currentScore << " tries." << endl;
 		cout << "Average: " << static_cast<double>(totalScore) / (i + 1) << ", minimum: " << minTries << ", maximum: " << maxTries << endl;
 	}
+	return 0;
 }
 
 int runOneRound(const char words[][7], int nWords, int wordnum)
 {
+	if (nWords < 0 || wordnum < 0 || wordnum >= nWords)
+		return -1;
+	
 	//Initialize necessary variables
 	int numAttempts = 0;
 	char probeWord[101];
@@ -137,7 +145,7 @@ int runOneRound(const char words[][7], int nWords, int wordnum)
 			return numAttempts;
 		else
 		{
-			cout << "Stars: " << stars << ", Planers: " << planets << endl;
+			cout << "Stars: " << stars << ", Planets: " << planets << endl;
 		}
 	}
 	return -1;
